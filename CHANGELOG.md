@@ -1,6 +1,6 @@
 ## 0.3.0 (unreleased)
 
-
+  - Loosen dependency on net-ssh version
 
 ## 0.2.0 (June 13, 2011)
 

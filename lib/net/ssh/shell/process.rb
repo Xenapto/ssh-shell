@@ -1,4 +1,4 @@
-module Net; module SSH; class Shell
+class Net::SSH::Shell
   class Process
     attr_reader :state
     attr_reader :command
@@ -42,7 +42,7 @@ module Net; module SSH; class Shell
           callback.call(self) if callback
 
           cmd = command.dup
-          cmd << ";" if cmd !~ /[;&]$/
+          cmd << ';' if cmd !~ /[;&]$/
           cmd << " DONTEVERUSETHIS=$?; echo #{manager.separator} $DONTEVERUSETHIS; echo \"exit $DONTEVERUSETHIS\"|sh"
 
           send_data(cmd + "\n")
@@ -91,17 +91,17 @@ module Net; module SSH; class Shell
       @on_output.call(self, data) if @on_output
     end
 
-    def on_stdout(ch, data)
+    def on_stdout(_ch, data)
       if data.strip =~ /#{manager.separator} (\d+)$/
         before = $`
         output!(before) unless before.empty?
-        finished!($1)
+        finished!(Regexp.last_match[1])
       else
         output!(data)
       end
     end
 
-    def on_stderr(ch, type, data)
+    def on_stderr(_ch, _type, data)
       @on_error_output.call(self, data) if @on_error_output
     end
 
@@ -117,4 +117,4 @@ module Net; module SSH; class Shell
       manager.child_finished(self)
     end
   end
-end; end; end
+end
